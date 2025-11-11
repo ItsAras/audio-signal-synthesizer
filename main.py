@@ -19,8 +19,12 @@ class AudioSignalSynthesizer:
         ttk.Label(main_frame, text="Garso tipas:").grid(row=0, column=0, sticky=tk.W, pady=5)
         self.signal_type = tk.StringVar(value="Sinusoidinė banga")
         signal_combo = ttk.Combobox(main_frame, textvariable=self.signal_type, 
-                                     values=["Sinusoidinė banga", "Stačiakampė banga", "Pjūklo formos banga", "Trikampė banga", "Baltasis triukšmas"],
-                                     state="readonly", width=25)
+            values=["Sinusoidinė banga",
+                    "Stačiakampė banga",
+                    "Pjūklo formos banga",
+                    "Trikampė banga",
+                    "Baltasis triukšmas"],
+            state="readonly", width=25)
         signal_combo.grid(row=0, column=1, pady=5, padx=10)
 
         ttk.Label(main_frame, text="Trukmė (sekundėmis):").grid(row=1, column=0, sticky=tk.W, pady=5)
