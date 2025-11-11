@@ -2,14 +2,16 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import sounddevice as sd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class AudioSignalSynthesizer:
     def __init__(self, root):
         self.root = root
         self.root.title("Garso signalų sintezatorius")
-        self.root.geometry("400x300")
-        self.root.resizable(False, False)
+        self.root.geometry("900x700")
+        self.root.resizable(True, True)
 
         main_frame = ttk.Frame(root, padding="20")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
@@ -37,6 +39,16 @@ class AudioSignalSynthesizer:
         self.status_label = ttk.Label(main_frame, text="", foreground="green")
         self.status_label.grid(row=5, column=0, columnspan=2, pady=5)
 
+        # Waveform display
+        self.fig, self.ax = plt.subplots(figsize=(8, 4))
+        self.canvas = FigureCanvasTkAgg(self.fig, master=main_frame)
+        self.canvas.get_tk_widget().grid(row=6, column=0, columnspan=2, pady=10)
+        
+        self.ax.set_xlabel("Laikas (s)")
+        self.ax.set_ylabel("Amplitudė")
+        self.ax.set_title("Garso bangos forma")
+        self.ax.grid(True, alpha=0.3)
+
     def generate_audio(self):
         signal_type = self.signal_type.get()
         duration = float(self.duration.get())
@@ -63,6 +75,20 @@ class AudioSignalSynthesizer:
             audio = amplitude * 2 * np.abs(2 * (t * frequency - np.floor(0.5 + t * frequency))) - 1
         elif signal_type == "Baltasis triukšmas":
             audio = amplitude * np.random.uniform(-1, 1, len(t))
+        
+        # Display waveform (show only first 0.05 seconds for clarity)
+        display_duration = min(0.05, duration)
+        display_samples = int(sample_rate * display_duration)
+        
+        self.ax.clear()
+        self.ax.plot(t[:display_samples], audio[:display_samples], linewidth=0.5)
+        self.ax.set_xlabel("Laikas (s)")
+        self.ax.set_ylabel("Amplitudė")
+        self.ax.set_title(f"Garso bangos forma: {signal_type}")
+        self.ax.grid(True, alpha=0.3)
+        self.ax.set_xlim(0, display_duration)
+        self.ax.set_ylim(-1, 1)
+        self.canvas.draw()
         
         sd.play(audio, sample_rate)
         self.status_label.config(text=f"Grojama {signal_type}...", foreground="green")
