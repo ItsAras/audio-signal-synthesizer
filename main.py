@@ -178,7 +178,7 @@ class AudioSignalSynthesizer:
         
         # Enable play button
         self.play_stop_btn.config(state='normal')
-        self.status_label.config(text=f"Garso signalas sugeneruotas ({duration}s)", foreground="green")
+        self.status_label.config(text=f"Garso signalas sugeneruotas", foreground="green")
     
     def toggle_play_stop(self):
         """Play or stop the audio"""
@@ -195,7 +195,7 @@ class AudioSignalSynthesizer:
                 self.is_playing = True
                 self.play_stop_btn.config(text="Stabdyti")
                 signal_type = self.signal_type.get()
-                self.status_label.config(text=f"Grojama {signal_type}...", foreground="green")
+                self.status_label.config(text=f"Grojama...", foreground="green")
                 
                 # Start thread to wait for playback to finish
                 threading.Thread(target=self.wait_for_playback, daemon=True).start()
@@ -210,7 +210,7 @@ class AudioSignalSynthesizer:
     def on_audio_finished(self):
         """Called when audio finishes playing"""
         self.play_stop_btn.config(text="Groti")
-        self.status_label.config(text="Grojimas baigtas", foreground="blue")
+        self.status_label.config(text="Grojimas baigtas", foreground="red")
 
 def main():
     root = tk.Tk()
